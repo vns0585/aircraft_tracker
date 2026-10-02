@@ -1,67 +1,27 @@
-class Aeroplane:
-    # 0. Unique ICAO 24-bit address of the transponder in hex string representation.
-    #icao24: str
+from functools import total_ordering
 
-    # 1. Callsign of the vehicle (8 chars). Can be null if no callsign has been received.
+
+@total_ordering
+class Aeroplane:
+
+    # Позывной рейса (8 символов).
     callsign: str
 
-    # 2. Country name inferred from the ICAO 24-bit address.
+    # Страна регистрации ВС
     origin_country: str
 
-    # 3. Unix timestamp (seconds) for the last position update. Can be null if no position report was received by
-    # OpenSky within the past 15s.
-    #time_position: int
-
-    # 4. Unix timestamp (seconds) for the last update in general. This field is updated for any new, valid message
-    # received from the transponder.
-    #last_contact: int
-
-    # 5. WGS-84 longitude in decimal degrees. Can be null.
-    #longitude: float
-
-    # 6. WGS-84 latitude in decimal degrees. Can be null.
-    #latitude: float
-
-    # 7. Barometric altitude in meters. Can be null.
+    # Барометрическая высота (м) (используется для вертикального эшелонирования)
     baro_altitude: float
 
-    # 8. Boolean value which indicates if the position was retrieved from a surface position report.
-    #on_ground: bool
-
-    # 9. Velocity over ground in m/s. Can be null.
+    # Горизонтальная скорость (м/с)
     velocity: float
 
-    # 10. True track in decimal degrees clockwise from north (north=0°). Can be null.
-    #true_track: float
-
-    # 11. Vertical rate in m/s. A positive value indicates that the airplane is climbing, a negative value indicates
-    # that it descends. Can be null.
-    #vertical_rate: float
-
-    # 12. IDs of the receivers which contributed to this state vector. Is null if no filtering for sensor was used
-    # in the request.
-    #sensors: int
-
-    # 13. Geometric altitude in meters. Can be null.
-    #geo_altitude: float
-
-    # 14. The transponder code aka Squawk. Can be null.
-    #squawk: str
-
-    # 15. Whether flight status indicates special purpose indicator.
-    #spi: bool
-
-    # 16. Origin of this state’s position.
-    # 0 = ADS-B
-    # 1 = ASTERIX
-    # 2 = MLAT
-    # 3 = FLARM
-    #position_source: int
+    # Минимальный стандартный интервал вертикального эшелонирования (м) (1000 футов ~ 304.8 метра)
+    ALTITUDE_TOLERANCE = 304.8
 
     def __init__(self, callsign: str, origin_country: str, baro_altitude: float, velocity: float) -> None:
         self.callsign = callsign if isinstance(callsign, str) and len(callsign) == 8 else ""
         self.origin_country = origin_country if isinstance(origin_country, str) else ""
-        # Используем барометрическую высоту, т.к. используется для эшелонирования в авиации
         self.baro_altitude = baro_altitude if isinstance(baro_altitude, float) and baro_altitude >= 0 else 0
         self.velocity = velocity if isinstance(velocity, float) and velocity >= 0 else 0
 
@@ -71,3 +31,33 @@ class Aeroplane:
         for item in aeroplanes_list:
             object_list.append(Aeroplane(item[1], item[2], item[7], item[9]))
         return object_list
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Aeroplane):
+            return NotImplemented
+        return self.velocity == other.velocity
+
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Aeroplane):
+            return NotImplemented
+        return self.velocity < other.velocity
+
+    # __le__, __gt__, __ge__, __ne__ достроит total_ordering
+
+    def __hash__(self):
+        return hash(self.velocity)
+
+    def is_higher_than(self, other: object) -> bool:
+        if not isinstance(other, Aeroplane):
+            raise TypeError(f"Ожидается объект класса Aeroplane, а предоставлен {type(other).__name__}")
+        return self.baro_altitude - other.baro_altitude > self.ALTITUDE_TOLERANCE
+
+    def is_lower_than(self, other: object) -> bool:
+        if not isinstance(other, Aeroplane):
+            raise TypeError(f"Ожидается объект класса Aeroplane, а предоставлен {type(other).__name__}")
+        return other.baro_altitude - self.baro_altitude > self.ALTITUDE_TOLERANCE
+
+    def at_same_altitude(self, other: object) -> bool:
+        if not isinstance(other, Aeroplane):
+            raise TypeError(f"Ожидается объект класса Aeroplane, а предоставлен {type(other).__name__}")
+        return abs(self.baro_altitude - other.baro_altitude) <= self.ALTITUDE_TOLERANCE
