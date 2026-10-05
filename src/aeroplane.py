@@ -44,7 +44,7 @@ class Aeroplane:
 
     # __le__, __gt__, __ge__, __ne__ достроит total_ordering
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.velocity)
 
     def is_higher_than(self, other: object) -> bool:

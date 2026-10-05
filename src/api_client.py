@@ -56,7 +56,7 @@ class ApiClient(BaseApiClient):
             }
         except KeyError as e:
             print("Неверный формат координат для получения списка самолетов", e)
-            return {}
+            return []
 
         response = get(url=url, params=params)
         self.last_request_time = datetime.now()
