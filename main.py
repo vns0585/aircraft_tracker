@@ -1,24 +1,30 @@
 from src.aeroplane import Aeroplane
 from src.api_client import ApiClient
+from src.json_saver import JsonSaver
 
 # Создание экземпляра класса для работы с API сайтов с самолетами
 api = ApiClient()
 
 # Получение информации о самолетах с opensky-network.org
-geo_coordinates = api.get_geo_coordinates("Spain")
+geo_coordinates = api.get_geo_coordinates("Luxembourg")
 aeroplanes = api.get_aeroplanes(geo_coordinates)
+print(len(aeroplanes))
 
 # Преобразование набора данных в список объектов
-aeroplanes_list = Aeroplane.cast_to_object_list([aeroplanes[0]])
+aeroplanes_list = Aeroplane.cast_to_object_list(aeroplanes)
+print(len(aeroplanes_list))
 
 # Пример работы контструктора класса с одним самолетом
-aeroplane = Aeroplane("UAL1621", "United States", 268.79, 10203.18)
+aeroplane = Aeroplane("UAL1621 ", "United States", 10203.18, 268.79)
 
-# # Сохранение информации в файл
-# json_saver = JSONSaver()
-# json_saver.add_aeroplane(vacancy)
-# json_saver.delete_aeroplane(vacancy)
-#
+# Сохранение информации в файл
+json_saver = JsonSaver()
+json_saver.add_aeroplane(aeroplane)
+for aeroplane in aeroplanes_list:
+    json_saver.add_aeroplane(aeroplane)
+
+json_list = json_saver.get_aeroplanes(origin_country = "United States")
+
 # # Функция для взаимодействия с пользователем
 # def user_interaction():
 #     country = input("Введите название страны: ")
@@ -40,3 +46,8 @@ if __name__ == "__main__":
     print(aeroplanes_list[0].origin_country)
     print(aeroplanes_list[0].velocity)
     print(aeroplanes_list[0].baro_altitude)
+
+    print(json_list[0].callsign)
+    print(json_list[0].origin_country)
+    print(json_list[0].velocity)
+    print(json_list[0].baro_altitude)

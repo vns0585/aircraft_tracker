@@ -2,6 +2,7 @@ import json
 import os
 
 from src.base_saver import BaseSaver
+from src.aeroplane import Aeroplane
 
 
 class JsonSaver(BaseSaver):
@@ -24,9 +25,13 @@ class JsonSaver(BaseSaver):
         with open(self.file_path, "w", encoding="utf-8") as file:
             json.dump(data, file, ensure_ascii=False, indent=4)
 
-    def add_aeroplane(self, aeroplane_data: dict) -> None:
+    def add_aeroplane(self, aeroplane: Aeroplane) -> None:
         data = self._read()
-        data.append(aeroplane_data)
+        data = [
+            item for item in data
+            if str(item.get("callsign")) != str(vars(aeroplane).get("callsign"))
+        ]
+        data.append(vars(aeroplane))
         self._write(data)
 
     def get_aeroplanes(self, **criteria: dict) -> list:
@@ -34,7 +39,7 @@ class JsonSaver(BaseSaver):
         if not criteria:
             return data
         return [
-            item for item in data
+            Aeroplane(**item) for item in data
             if all(str(item.get(key)) == str(value) for key, value in criteria.items())
         ]
 

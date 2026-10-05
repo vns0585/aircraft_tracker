@@ -47,17 +47,23 @@ class Aeroplane:
     def __hash__(self) -> int:
         return hash(self.velocity)
 
-    def is_higher_than(self, other: object) -> bool:
+    def is_higher_than(self, other: object, altitude_tolerance: float = ALTITUDE_TOLERANCE) -> bool:
+        if altitude_tolerance < 0:
+            raise ValueError("Интервал вертикального эшелонирования должен быть положительным числом")
         if not isinstance(other, Aeroplane):
             raise TypeError(f"Ожидается объект класса Aeroplane, а предоставлен {type(other).__name__}")
-        return self.baro_altitude - other.baro_altitude > self.ALTITUDE_TOLERANCE
+        return self.baro_altitude - other.baro_altitude > altitude_tolerance
 
-    def is_lower_than(self, other: object) -> bool:
+    def is_lower_than(self, other: object, altitude_tolerance: float = ALTITUDE_TOLERANCE) -> bool:
+        if altitude_tolerance < 0:
+            raise ValueError("Интервал вертикального эшелонирования должен быть положительным числом")
         if not isinstance(other, Aeroplane):
             raise TypeError(f"Ожидается объект класса Aeroplane, а предоставлен {type(other).__name__}")
-        return other.baro_altitude - self.baro_altitude > self.ALTITUDE_TOLERANCE
+        return other.baro_altitude - self.baro_altitude > altitude_tolerance
 
-    def at_same_altitude(self, other: object) -> bool:
+    def at_same_altitude(self, other: object, altitude_tolerance: float = ALTITUDE_TOLERANCE) -> bool:
+        if altitude_tolerance < 0:
+            raise ValueError("Интервал вертикального эшелонирования должен быть положительным числом")
         if not isinstance(other, Aeroplane):
             raise TypeError(f"Ожидается объект класса Aeroplane, а предоставлен {type(other).__name__}")
-        return abs(self.baro_altitude - other.baro_altitude) <= self.ALTITUDE_TOLERANCE
+        return abs(self.baro_altitude - other.baro_altitude) <= altitude_tolerance

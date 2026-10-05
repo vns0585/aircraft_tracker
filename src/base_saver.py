@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
-
+from src.aeroplane import Aeroplane
 
 class BaseSaver(ABC):
 
     @abstractmethod
-    def add_aeroplane(self, aeroplane_data: dict) -> None:
+    def add_aeroplane(self, aeroplane: Aeroplane) -> None:
         pass
 
     @abstractmethod
