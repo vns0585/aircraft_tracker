@@ -2,52 +2,60 @@ from src.aeroplane import Aeroplane
 from src.api_client import ApiClient
 from src.json_saver import JsonSaver
 
-# Создание экземпляра класса для работы с API сайтов с самолетами
-api = ApiClient()
 
-# Получение информации о самолетах с opensky-network.org
-geo_coordinates = api.get_geo_coordinates("Luxembourg")
-aeroplanes = api.get_aeroplanes(geo_coordinates)
-print(len(aeroplanes))
+def user_interaction() -> None:
+    country = input("Введите название страны: ")
+    top_n = int(input("Введите количество самолетов для вывода в топ N: "))
+    filter_words = input("Введите названия стран для фильтрации по стране регистрации: ").split()
+    altitude_range = input("Введите диапазон высот полета: ")  # Пример: 100000 - 150000
 
-# Преобразование набора данных в список объектов
-aeroplanes_list = Aeroplane.cast_to_object_list(aeroplanes)
-print(len(aeroplanes_list))
 
-# Пример работы контструктора класса с одним самолетом
-aeroplane = Aeroplane("UAL1621 ", "United States", 10203.18, 268.79)
-
-# Сохранение информации в файл
-json_saver = JsonSaver()
-json_saver.add_aeroplane(aeroplane)
-for aeroplane in aeroplanes_list:
-    json_saver.add_aeroplane(aeroplane)
-
-json_list = json_saver.get_aeroplanes(origin_country = "United States")
-
-# # Функция для взаимодействия с пользователем
-# def user_interaction():
-#     country = input("Введите название страны: ")
-#     top_n = int(input("Введите количество самолетов для вывода в топ N: "))
-#     filter_words = input("Введите названия стран для фильтрации по стране регистрации: ").split()
-#     altitude_range = input("Введите диапазон высот полета: ") # Пример: 100000 - 150000
+# # Создание экземпляра класса для работы с API сайтов с самолетами
+# api = ApiClient()
 #
-#     filtered_aeroplanes = filter_aeroplanes(aeroplanes, filter_words)
+# # Получение информации о самолетах с opensky-network.org
+# geo_coordinates = api.get_geo_coordinates("Luxembourg")
+# aeroplanes = api.get_aeroplanes(geo_coordinates)
+# print(len(aeroplanes))
 #
-#     ranged_aeroplanes = get_aeroplanes_by_altitude(aeroplanes, altitude_range)
+# # Преобразование набора данных в список объектов
+# aeroplanes_list = Aeroplane.cast_to_object_list(aeroplanes)
+# print(len(aeroplanes_list))
 #
-#     sorted_aeroplanes = sort_aeroplanes(ranged_aeroplanes)
-#     top_aeroplanes = get_top_aeroplanes(sorted_aeroplanes, top_n)
-#     print_aeroplanes(top_aeroplanes)
-
-
-if __name__ == "__main__":
-    print(aeroplanes_list[0].callsign)
-    print(aeroplanes_list[0].origin_country)
-    print(aeroplanes_list[0].velocity)
-    print(aeroplanes_list[0].baro_altitude)
-
-    print(json_list[0].callsign)
-    print(json_list[0].origin_country)
-    print(json_list[0].velocity)
-    print(json_list[0].baro_altitude)
+# # Пример работы контструктора класса с одним самолетом
+# aeroplane = Aeroplane("UAL1621 ", "United States", 10203.18, 268.79)
+#
+# # Сохранение информации в файл
+# json_saver = JsonSaver()
+# json_saver.add_aeroplane(aeroplane)
+# for aeroplane in aeroplanes_list:
+#     json_saver.add_aeroplane(aeroplane)
+#
+# json_list = json_saver.get_aeroplanes(origin_country = "United States")
+#
+# # # Функция для взаимодействия с пользователем
+# # def user_interaction():
+# #     country = input("Введите название страны: ")
+# #     top_n = int(input("Введите количество самолетов для вывода в топ N: "))
+# #     filter_words = input("Введите названия стран для фильтрации по стране регистрации: ").split()
+# #     altitude_range = input("Введите диапазон высот полета: ") # Пример: 100000 - 150000
+# #
+# #     filtered_aeroplanes = filter_aeroplanes(aeroplanes, filter_words)
+# #
+# #     ranged_aeroplanes = get_aeroplanes_by_altitude(aeroplanes, altitude_range)
+# #
+# #     sorted_aeroplanes = sort_aeroplanes(ranged_aeroplanes)
+# #     top_aeroplanes = get_top_aeroplanes(sorted_aeroplanes, top_n)
+# #     print_aeroplanes(top_aeroplanes)
+#
+#
+# if __name__ == "__main__":
+#     print(aeroplanes_list[0].callsign)
+#     print(aeroplanes_list[0].origin_country)
+#     print(aeroplanes_list[0].velocity)
+#     print(aeroplanes_list[0].baro_altitude)
+#
+#     print(json_list[0].callsign)
+#     print(json_list[0].origin_country)
+#     print(json_list[0].velocity)
+#     print(json_list[0].baro_altitude)
