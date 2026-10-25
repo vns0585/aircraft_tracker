@@ -36,7 +36,12 @@ class ApiClient(BaseApiClient):
 
         response = get(url=url, params=params, headers=headers)
         data = response.json()
-        geo_coordinates = data[0].get('boundingbox')
+        if response.status_code != 200:
+            return []
+        try:
+            geo_coordinates = data[0].get('boundingbox')
+        except IndexError:
+            return []
         if isinstance(geo_coordinates, list):
             return geo_coordinates
         else:
