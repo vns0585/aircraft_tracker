@@ -1,8 +1,8 @@
 import json
 import os
 
-from src.base_saver import BaseSaver
 from src.aeroplane import Aeroplane
+from src.base_saver import BaseSaver
 
 
 class JsonSaver(BaseSaver):
@@ -27,14 +27,6 @@ class JsonSaver(BaseSaver):
 
     def add_aeroplane(self, aeroplane: Aeroplane) -> None:
         self.add_aeroplanes([aeroplane])
-        #
-        # data = self._read()
-        # data = [
-        #     item for item in data
-        #     if str(item.get("callsign")) != str(vars(aeroplane).get("callsign"))
-        # ]
-        # data.append(vars(aeroplane))
-        # self._write(data)
 
     def add_aeroplanes(self, aeroplanes_list: list[Aeroplane]) -> None:
         if not aeroplanes_list:
