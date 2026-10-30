@@ -40,7 +40,7 @@ class ApiClient(BaseApiClient):
             return []
         try:
             geo_coordinates = data[0].get('boundingbox')
-        except IndexError:
+        except KeyError:
             return []
         if isinstance(geo_coordinates, list):
             return geo_coordinates
@@ -59,19 +59,16 @@ class ApiClient(BaseApiClient):
                 'lomin': geo_coordinates[2],
                 'lomax': geo_coordinates[3],
             }
-        except KeyError as e:
+        except IndexError as e:
             print("Неверный формат координат для получения списка самолетов", e)
             return []
 
         response = get(url=url, params=params)
+        if response.status_code != 200:
+            return []
         self.last_request_time = datetime.now()
-        self.aeroplanes = response.json().get('states')
+        try:
+            self.aeroplanes = response.json().get('states', [])
+        except AttributeError:
+            return []
         return self.aeroplanes
-
-
-if __name__ == '__main__':
-    api = ApiClient()
-    geo = api.get_geo_coordinates("Luxembourg")
-    print(geo)
-    planes = api.get_aeroplanes(geo)
-    print(planes)
