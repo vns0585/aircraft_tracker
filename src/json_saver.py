@@ -26,12 +26,27 @@ class JsonSaver(BaseSaver):
             json.dump(data, file, ensure_ascii=False, indent=4)
 
     def add_aeroplane(self, aeroplane: Aeroplane) -> None:
+        self.add_aeroplanes([aeroplane])
+        #
+        # data = self._read()
+        # data = [
+        #     item for item in data
+        #     if str(item.get("callsign")) != str(vars(aeroplane).get("callsign"))
+        # ]
+        # data.append(vars(aeroplane))
+        # self._write(data)
+
+    def add_aeroplanes(self, aeroplanes_list: list[Aeroplane]) -> None:
+        if not aeroplanes_list:
+            return
+        if not all(isinstance(item, Aeroplane) for item in aeroplanes_list):
+            raise TypeError(f"Ожидался список Aeroplane, получены: "
+                            f"{[type(a).__name__ for a in aeroplanes_list if not isinstance(a, Aeroplane)]}"
+                            )
         data = self._read()
-        data = [
-            item for item in data
-            if str(item.get("callsign")) != str(vars(aeroplane).get("callsign"))
-        ]
-        data.append(vars(aeroplane))
+        new_callsigns = {str(vars(aeroplane).get("callsign")) for aeroplane in aeroplanes_list}
+        data = [item for item in data if str(item.get("callsign")) not in new_callsigns]
+        data.extend(vars(aeroplane) for aeroplane in aeroplanes_list)
         self._write(data)
 
     def get_aeroplanes(self, **criteria: dict) -> list:
