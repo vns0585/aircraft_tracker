@@ -27,9 +27,14 @@ class Aeroplane:
 
     @staticmethod
     def cast_to_object_list(aeroplanes_list: list) -> list:
+        if not isinstance(aeroplanes_list, list) or not len(aeroplanes_list) > 0:
+            return []
         object_list = []
         for item in aeroplanes_list:
-            object_list.append(Aeroplane(item[1], item[2], item[7], item[9]))
+            try:
+                object_list.append(Aeroplane(item[1], item[2], item[7], item[9]))
+            except IndexError:
+                continue
         return object_list
 
     def __eq__(self, other: object) -> bool:

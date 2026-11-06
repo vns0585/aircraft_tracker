@@ -22,7 +22,8 @@ def filter_aeroplanes(aeroplanes_list: list[Aeroplane], filter_words: list[str])
         return aeroplanes_list
     if len(aeroplanes_list) < 1:
         return aeroplanes_list
-    filtered_aeroplanes_list = list(filter(lambda x: x.origin_country in filter_words, aeroplanes_list))
+    filter_words_lower = [fw.lower() for fw in filter_words]
+    filtered_aeroplanes_list = list(filter(lambda x: x.origin_country.lower() in filter_words_lower, aeroplanes_list))
     return filtered_aeroplanes_list
 
 
@@ -58,6 +59,7 @@ def user_interaction() -> None:
 
     # Получение информации о самолетах
     aeroplanes = api.get_aeroplanes(geo_coordinates)
+    print(aeroplanes)
     if not aeroplanes:
         print(f'Нет информации о самолетах над {country}')
         return
@@ -78,7 +80,8 @@ def user_interaction() -> None:
     print(f'\nСамолеты зарегистрированные в стране {filter_word}: ')
     for i in range(len(filtered_aeroplanes)):
         print(f'{i+1}. Позывной: {filtered_aeroplanes[i].callsign},'
-              f' Страна регистрации: {filtered_aeroplanes[i].origin_country}')
+              f' Страна регистрации: {filtered_aeroplanes[i].origin_country}'
+              f' Скорость: {filtered_aeroplanes[i].velocity}')
 
 
 if __name__ == '__main__':

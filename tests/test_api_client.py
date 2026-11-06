@@ -49,7 +49,7 @@ def test_get_aeroplanes_success(mock_get: Mock) -> None:
 
 
 @patch("src.api_client.get")
-def test_get_aeroplanes_wrong_request(mock_get: Mock) -> None:
+def test_get_aeroplanes_wrong_response(mock_get: Mock) -> None:
     api_client = ApiClient()
     mock_response = Mock()
     mock_response.status_code = 502
