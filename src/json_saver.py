@@ -36,15 +36,15 @@ class JsonSaver(BaseSaver):
                             f"{[type(a).__name__ for a in aeroplanes_list if not isinstance(a, Aeroplane)]}"
                             )
         data = self._read()
-        new_callsigns = {str(vars(aeroplane).get("callsign")) for aeroplane in aeroplanes_list}
-        data = [item for item in data if str(item.get("callsign")) not in new_callsigns]
-        data.extend(vars(aeroplane) for aeroplane in aeroplanes_list)
+        new_by_callsign = {vars(a).get("callsign"): dict(vars(a)) for a in aeroplanes_list}
+        data = [item for item in data if item.get("callsign") not in new_by_callsign]
+        data.extend(new_by_callsign.values())
         self._write(data)
 
-    def get_aeroplanes(self, **criteria: dict) -> list:
+    def get_aeroplanes(self, **criteria: dict) -> list[Aeroplane]:
         data = self._read()
         if not criteria:
-            return data
+            return [Aeroplane(**item) for item in data]
         return [
             Aeroplane(**item) for item in data
             if all(str(item.get(key)) == str(value) for key, value in criteria.items())
@@ -58,7 +58,7 @@ class JsonSaver(BaseSaver):
 
         kept = [
             item for item in data
-            if all(str(item.get(key)) == str(value) for key, value in criteria.items())
+            if all(str(item.get(key)) != str(value) for key, value in criteria.items())
         ]
         deleted = len(data) - len(kept)
         self._write(kept)

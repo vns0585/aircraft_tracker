@@ -59,7 +59,6 @@ def user_interaction() -> None:
 
     # Получение информации о самолетах
     aeroplanes = api.get_aeroplanes(geo_coordinates)
-    print(aeroplanes)
     if not aeroplanes:
         print(f'Нет информации о самолетах над {country}')
         return
