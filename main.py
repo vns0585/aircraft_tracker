@@ -6,6 +6,9 @@ from src.json_saver import JsonSaver
 
 
 def get_top_aeroplanes(aeroplanes_list: list[Aeroplane], top_n: int) -> list[Aeroplane]:
+    if not all(isinstance(item, Aeroplane) for item in aeroplanes_list):
+        raise TypeError(f"Ожидался список Aeroplane, получены: "
+                        f"{[type(a).__name__ for a in aeroplanes_list if not isinstance(a, Aeroplane)]}")
     if top_n < 1:
         return []
     if len(aeroplanes_list) < 2:
@@ -18,11 +21,14 @@ def get_top_aeroplanes(aeroplanes_list: list[Aeroplane], top_n: int) -> list[Aer
 
 
 def filter_aeroplanes(aeroplanes_list: list[Aeroplane], filter_words: list[str]) -> list[Aeroplane]:
+    if not all(isinstance(item, Aeroplane) for item in aeroplanes_list):
+        raise TypeError(f"Ожидался список Aeroplane, получены: "
+                        f"{[type(a).__name__ for a in aeroplanes_list if not isinstance(a, Aeroplane)]}")
     if not filter_words:
         return aeroplanes_list
     if len(aeroplanes_list) < 1:
         return aeroplanes_list
-    filter_words_lower = [fw.lower() for fw in filter_words]
+    filter_words_lower = [str(fw).lower() for fw in filter_words]
     filtered_aeroplanes_list = list(filter(lambda x: x.origin_country.lower() in filter_words_lower, aeroplanes_list))
     return filtered_aeroplanes_list
 

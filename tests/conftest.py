@@ -17,3 +17,15 @@ def data() -> list:
     return [{"callsign": "EWG6SW  ", "origin_country": "Germany", "baro_altitude": 9098.28, "velocity": 212.48},
             {"callsign": "EZY46RQ ", "origin_country": "United Kingdom", "baro_altitude": 11277.6, "velocity": 241.56},
             {"callsign": "EJU68XU ", "origin_country": "Austria", "baro_altitude": 11902.44, "velocity": 216.87}]
+
+
+@pytest.fixture
+def sorted_data_by_altitude_dsc() -> list:
+    return [{"callsign": "EJU68XU ", "origin_country": "Austria", "baro_altitude": 11902.44, "velocity": 216.87},
+            {"callsign": "EZY46RQ ", "origin_country": "United Kingdom", "baro_altitude": 11277.6, "velocity": 241.56},
+            {"callsign": "EWG6SW  ", "origin_country": "Germany", "baro_altitude": 9098.28, "velocity": 212.48}]
+
+
+@pytest.fixture
+def filtered_data() -> dict:
+    return {"callsign": "EWG6SW  ", "origin_country": "Germany", "baro_altitude": 9098.28, "velocity": 212.48}
